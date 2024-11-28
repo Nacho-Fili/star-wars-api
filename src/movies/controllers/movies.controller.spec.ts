@@ -12,6 +12,10 @@ describe('MoviesController', () => {
     moviesController = app.get<MoviesController>(MoviesController);
   });
 
+  it('should be defined', () => {
+    expect(moviesController).toBeDefined();
+  });
+
   it('Should return true', async () => {
     const movies = await moviesController.getMovies();
     expect(movies).toEqual(expect.arrayContaining([]));

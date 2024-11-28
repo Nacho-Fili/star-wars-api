@@ -12,6 +12,10 @@ describe('UsersController', () => {
     usersController = app.get<UsersController>(UsersController);
   });
 
+  it('should be defined', () => {
+    expect(usersController).toBeDefined();
+  });
+
   it('Should return true', () => {
     expect(usersController.login()).toBe(true);
   });
