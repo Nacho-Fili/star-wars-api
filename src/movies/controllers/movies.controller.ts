@@ -21,4 +21,9 @@ export class MoviesController {
   updateMovie(@Param('id') id: string, data: Record<string, string>) {
     return Promise.resolve({ id, ...data });
   }
+
+  @Post('/sync')
+  syncMovies() {
+    return Promise.resolve([]);
+  }
 }
