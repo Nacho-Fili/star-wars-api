@@ -1,5 +1,9 @@
 import { hash } from 'bcryptjs';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../schemas/user.schema';
 import { SignUpDTO } from '../dto/signUp.dto';
@@ -19,6 +23,16 @@ export class UsersProvider {
   }
 
   async signUp(signUpDTO: SignUpDTO) {
+    const existingUser = await this.userModel
+      .findOne({
+        username: signUpDTO.username,
+      })
+      .exec();
+
+    if (existingUser) {
+      throw new BadRequestException('Username is already in use');
+    }
+
     const encryptedPassword = await hash(signUpDTO.password, 10);
     const user = new this.userModel({
       username: signUpDTO.username,

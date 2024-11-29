@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Movie, MovieDocument } from '../schemas/movie.schema';
@@ -17,6 +21,10 @@ export class MoviesProvider {
       })
       .exec();
 
+    if (!document) {
+      throw new NotFoundException();
+    }
+
     return MovieDTO.fromDocument(document);
   }
 
@@ -26,6 +34,14 @@ export class MoviesProvider {
   }
 
   async create(movieToCreate: CreateMovieDTO) {
+    const episodeIdExists = await this.movieModel
+      .findOne({ episodeId: movieToCreate.episodeId })
+      .exec();
+
+    if (episodeIdExists) {
+      throw new BadRequestException('Episode id already exists');
+    }
+
     const createdMovie = new this.movieModel(movieToCreate);
     const savedMovie = await createdMovie.save();
 
@@ -37,13 +53,21 @@ export class MoviesProvider {
       .findOneAndUpdate({ episodeId: movieId }, movieToUpdate, { new: true })
       .exec();
 
+    if (!movieDocument) {
+      throw new NotFoundException();
+    }
+
     return MovieDTO.fromDocument(movieDocument);
   }
 
   async delete(movieToDeleteId: number) {
-    await this.movieModel
+    const deleted = await this.movieModel
       .findOneAndDelete({ episodeId: movieToDeleteId })
       .exec();
+
+    if (!deleted) {
+      throw new NotFoundException();
+    }
 
     return { success: true };
   }
