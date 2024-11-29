@@ -1,7 +1,8 @@
-import { Controller, Post, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Body } from '@nestjs/common';
 import { LocalAuthGuard } from '../guards/localAuth.guard';
 import { AuthProvider } from '../services/auth.provider';
 import { IsPublic } from '../decorators/isPublic.decorator';
+import { LoginDTO } from '../dto/login.dto';
 
 @Controller()
 export class AuthController {
@@ -10,7 +11,8 @@ export class AuthController {
   @IsPublic()
   @UseGuards(LocalAuthGuard)
   @Post('/auth/login')
-  login(@Request() req) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  login(@Request() req, @Body() _: LoginDTO) {
     return this.authProvider.login(req.user);
   }
 }
