@@ -1,29 +1,52 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { CreateMovieDTO } from '../dto/createMovie.dto';
+import { UpdateMovieDTO } from '../dto/updateMovie.dto';
+import { MovieDTO } from '../dto/movie.dto';
+import { MoviesProvider } from '../services/movies.provider';
 
 @Controller('/movies')
 export class MoviesController {
+  constructor(private readonly moviesProvider: MoviesProvider) {}
+
   @Get('/')
-  getMovies(): Promise<any[]> {
-    return Promise.resolve([]);
+  getMovies(): Promise<MovieDTO[]> {
+    return this.moviesProvider.getAll();
   }
 
   @Get('/:id')
-  getMovie(@Param('id') id: string): Promise<string> {
-    return Promise.resolve(id);
+  getMovie(@Param('id') id: number): Promise<MovieDTO> {
+    return this.moviesProvider.getById(id);
   }
 
   @Post('/')
-  createMovie(@Body() data: Record<string, string>) {
-    return Promise.resolve(data);
+  createMovie(@Body() data: CreateMovieDTO): Promise<MovieDTO> {
+    return this.moviesProvider.create(data);
   }
 
   @Put('/:id')
-  updateMovie(@Param('id') id: string, data: Record<string, string>) {
-    return Promise.resolve({ id, ...data });
+  updateMovie(
+    @Param('id') id: number,
+    @Body() updateMovieDTO: UpdateMovieDTO,
+  ): Promise<MovieDTO> {
+    return this.moviesProvider.update(id, updateMovieDTO);
+  }
+
+  @Delete('/:id')
+  deleteMovie(@Param('id') id: number) {
+    return this.moviesProvider.delete(id);
   }
 
   @Post('/sync')
-  syncMovies() {
-    return Promise.resolve([]);
+  async syncMovies() {
+    await this.moviesProvider.sync();
+    return { success: true };
   }
 }

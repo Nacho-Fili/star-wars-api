@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MoviesController } from './movies.controller';
+import { MoviesProvider } from '../services/movies.provider';
+import { MoviesProviderMock } from '../services/movies.provider.mock';
 
 describe('MoviesController', () => {
   let moviesController: MoviesController;
@@ -7,6 +9,7 @@ describe('MoviesController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [MoviesController],
+      providers: [{ provide: MoviesProvider, useClass: MoviesProviderMock }],
     }).compile();
 
     moviesController = app.get<MoviesController>(MoviesController);
@@ -22,31 +25,36 @@ describe('MoviesController', () => {
   });
 
   it('Should return true', async () => {
-    const movieId = await moviesController.getMovie('id');
-    expect(movieId).toBe('id');
+    const movie = await moviesController.getMovie(3);
+    expect(movie.id).toBe(3);
   });
 
   it('Should return the data', async () => {
     const createdMovie = await moviesController.createMovie({
-      name: 'Star Wars III',
+      title: 'Star Wars III',
+      producer: 'McCallum',
+      episodeId: 8,
+      director: 'McCallum',
+      openingCrawl: '',
+      releaseDate: '12-28-2024',
     });
 
     expect(createdMovie).toEqual(
       expect.objectContaining({
-        name: 'Star Wars III',
+        title: 'Star Wars III',
       }),
     );
   });
 
   it('Should return the data and the id', async () => {
-    const updatedMovie = await moviesController.updateMovie('id', {
-      name: 'Star Wars IV',
+    const updatedMovie = await moviesController.updateMovie(3, {
+      title: 'Star Wars IV',
     });
 
     expect(updatedMovie).toEqual(
       expect.objectContaining({
-        id: 'id',
-        name: 'Star Wars IV',
+        id: 3,
+        title: 'Star Wars IV',
       }),
     );
   });

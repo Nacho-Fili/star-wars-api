@@ -6,7 +6,7 @@ export type MovieDocument = HydratedDocument<Movie>;
 export class Movie {
   @Prop({ required: true })
   title: string;
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true, readonly: true })
   episodeId: number;
   @Prop({ required: true })
   openingCrawl: string;
@@ -15,7 +15,7 @@ export class Movie {
   @Prop({ required: true })
   producer: string;
   @Prop({ required: true })
-  releaseDate: number;
+  releaseDate: string;
 }
 
 export const MovieSchema = SchemaFactory.createForClass(Movie);
