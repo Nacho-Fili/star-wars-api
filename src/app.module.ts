@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MoviesModule } from './movies/movies.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { MoviesModule } from './movies/movies.module';
       `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_NAME}.tpfwz.mongodb.net/?retryWrites=true&w=majority&appName=${process.env.DB_NAME}`,
     ),
     MoviesModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
