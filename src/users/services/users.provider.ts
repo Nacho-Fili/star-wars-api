@@ -9,6 +9,7 @@ import { User } from '../schemas/user.schema';
 import { SignUpDTO } from '../dto/signUp.dto';
 import { Model } from 'mongoose';
 import { UserDTO } from '../dto/user.dto';
+import { UserRoles } from '../../enums/userRoles.enum';
 
 @Injectable()
 export class UsersProvider {
@@ -26,7 +27,7 @@ export class UsersProvider {
     };
   }
 
-  async signUp(signUpDTO: SignUpDTO) {
+  async createUser(signUpDTO: SignUpDTO, role: UserRoles) {
     const existingUser = await this.userModel
       .findOne({
         username: signUpDTO.username,
@@ -41,10 +42,14 @@ export class UsersProvider {
     const user = new this.userModel({
       username: signUpDTO.username,
       password: encryptedPassword,
-      role: signUpDTO.role,
+      role,
     });
 
     const userDocument = await user.save();
     return UserDTO.fromDocument(userDocument);
+  }
+
+  async signUp(signUpDTO: SignUpDTO) {
+    return this.createUser(signUpDTO, UserRoles.REGULAR);
   }
 }
