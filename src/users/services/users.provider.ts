@@ -19,7 +19,11 @@ export class UsersProvider {
     if (!user) {
       throw new NotFoundException();
     }
-    return user;
+    return {
+      username: user.username,
+      role: user.role,
+      password: user.password,
+    };
   }
 
   async signUp(signUpDTO: SignUpDTO) {
