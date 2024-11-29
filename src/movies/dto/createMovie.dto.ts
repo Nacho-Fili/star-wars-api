@@ -1,4 +1,5 @@
 import { IsNumberString, IsString } from 'class-validator';
+import { DateIsValid } from '../../utils/decorators/dateIsValid';
 
 export class CreateMovieDTO {
   @IsString()
@@ -11,6 +12,6 @@ export class CreateMovieDTO {
   director: string;
   @IsString()
   producer: string;
-  @IsString()
+  @DateIsValid()
   releaseDate: string;
 }
