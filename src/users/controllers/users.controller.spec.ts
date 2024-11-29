@@ -29,12 +29,11 @@ describe('UsersController', () => {
     const signUpResult = await usersController.signUp({
       username: 'Snape',
       password: 'Alohomora',
-      role: UserRoles.ADMIN,
     });
     expect(signUpResult).toEqual(
       expect.objectContaining({
         username: 'Snape',
-        role: UserRoles.ADMIN,
+        role: UserRoles.REGULAR,
       }),
     );
   });
