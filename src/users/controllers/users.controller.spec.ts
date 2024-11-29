@@ -1,5 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
+import { UserRoles } from '../../enums/userRoles.enum';
+import { UsersProvider } from '../services/users.provider';
+import { UsersProviderMock } from '../services/users.provider.mock';
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -7,6 +10,12 @@ describe('UsersController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
+      providers: [
+        {
+          provide: UsersProvider,
+          useClass: UsersProviderMock,
+        },
+      ],
     }).compile();
 
     usersController = app.get<UsersController>(UsersController);
@@ -16,11 +25,17 @@ describe('UsersController', () => {
     expect(usersController).toBeDefined();
   });
 
-  it('Should return true', () => {
-    expect(usersController.login()).toBe(true);
-  });
-
-  it('Should return true', () => {
-    expect(usersController.signUp()).toBe(true);
+  it('Should return true', async () => {
+    const signUpResult = await usersController.signUp({
+      username: 'Snape',
+      password: 'Alohomora',
+      role: UserRoles.ADMIN,
+    });
+    expect(signUpResult).toEqual(
+      expect.objectContaining({
+        username: 'Snape',
+        role: UserRoles.ADMIN,
+      }),
+    );
   });
 });

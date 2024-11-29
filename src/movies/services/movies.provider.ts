@@ -16,6 +16,7 @@ export class MoviesProvider {
         episodeId: id,
       })
       .exec();
+
     return MovieDTO.fromDocument(document);
   }
 
